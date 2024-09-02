@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Personnel Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 20px;
+        }
+        .profile {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .deliveries {
+            margin: 0 auto;
+            text-align: center;
+        }
+        .delivery-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            background-color: #e0e0e0;
+        }
+        .logout-link {
+            display: block;
+            margin-top: 10px;
+            color: red;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile">
+            <h3>My Profile</h3>
+            <p>Username: {{ user.username }}</p>
+            <p>Email: {{ user.email }}</p>
+            <a href="{% url 'logout' %}" class="logout-link">Log Out</a>
+        </div>
+        
+        <div class="deliveries">
+            <h2>Available Orders for Delivery</h2>
+            {% if available_orders %}
+                {% for order in available_orders %}
+                    <div class="delivery-item">
+                        <h4>Order #{{ order.id }}</h4>
+                        <p>Customer: {{ order.customer.username }}</p>
+                        <p>Total Price: ${{ order.total_price }}</p>
+                        <p>Status: {{ order.status }}</p>
+                        <form method="POST" action="{% url 'pick_order' order.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="pick-up-button">Pick Up Order</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No available deliveries at the moment.</p>
+            {% endif %}
+
+            <h2>Ongoing Deliveries</h2>
+            {% if ongoing_deliveries %}
+                {% for delivery in ongoing_deliveries %}
+                    <div class="delivery-item">
+                        <h4>Order #{{ delivery.id }}</h4>
+                        <p>Total Price: ${{ delivery.total_price }}</p>
+                        <p>Status: {{ delivery.status }}</p>
+                        <p>Customer: {{ delivery.customer.username }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No ongoing deliveries.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Owner Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 20px;
+        }
+        .profile {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .content {
+            margin: 0 auto;
+            text-align: center;
+            width: 60%;
+        }
+        .restaurant-item, .order-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            background-color: #e0e0e0;
+        }
+        .logout-link {
+            display: block;
+            margin-top: 10px;
+            color: red;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile">
+            <h3>My Profile</h3>
+            <p>Username: {{ user.username }}</p>
+            <p>Email: {{ user.email }}</p>           
+            <a href="{% url 'logout' %}" class="logout-link">Log Out</a>
+        </div>
+        
+        <div class="content">
+            <h2>Restaurant Owner Dashboard</h2>
+
+            <h3>My Restaurants</h3>
+            {% if restaurants.exists %}
+                {% for restaurant in restaurants %}
+                    <div class="restaurant-item">
+                        <h4>{{ restaurant.name }}</h4>
+                        <p>{{ restaurant.address }}</p>
+                        <a href="{% url 'restaurant_detail' restaurant.id %}">Manage Restaurant</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>You have not created any restaurants yet.</p>
+            {% endif %}
+
+            <h3>Create a New Restaurant</h3>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Create Restaurant</button>
+            </form>
+
+            <h3>Orders</h3>
+            {% if orders.exists %}
+                {% for order in orders %}
+                    <div class="order-item">
+                        <h4>Order #{{ order.id }}</h4>
+                        <p>Total Price: ${{ order.total_price }}</p>
+                        <p>Status: {{ order.status }}</p>
+                        <p>Placed by: {{ order.customer.username }}</p>
+                        <p>Ordered on: {{ order.created_at }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No orders available at the moment.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

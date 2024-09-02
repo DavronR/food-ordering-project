@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ restaurant.name }} - Manage Restaurant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin: 20px;
+        }
+        .menu-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+        }
+        .menu-form {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ restaurant.name }}</h1>
+        <p>Address: {{ restaurant.address }}</p>
+
+        <h2>Manage Menu</h2>
+
+        <!-- Form to add a new menu item -->
+        <div class="menu-form">
+            <h3>Add New Menu Item</h3>
+            <form method="POST" action="{% url 'manage_menu' restaurant.id %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Add Item</button>
+            </form>
+        </div>
+
+        <!-- List of existing menu items -->
+        <h3>Current Menu</h3>
+        {% if menu_items %}
+            <ul>
+                {% for item in menu_items %}
+                    <li class="menu-item">
+                        <strong>{{ item.name }}</strong> - ${{ item.price }}
+                        <!-- Button to delete the menu item -->
+                        <form method="POST" action="{% url 'manage_menu' restaurant.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="delete_item" value="{{ item.id }}">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No menu items yet.</p>
+        {% endif %}
+
+        <a href="{% url 'restaurant_owner_dashboard' %}">Back to Dashboard</a>
+    </div>
+</body>
+</html>

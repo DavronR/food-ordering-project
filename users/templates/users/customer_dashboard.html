@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 20px;
+        }
+        .profile {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .main-content {
+            margin: 0 auto;
+            text-align: center;
+            width: 70%;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            margin-bottom: 10px;
+        }
+        .restaurant-item, .order-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            background-color: #e0e0e0;
+        }
+        .logout-link {
+            display: block;
+            margin-top: 10px;
+            color: red;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .nav-links {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .nav-links a {
+            margin-right: 15px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile">
+            <h3>My Profile</h3>
+            <p>Username: {{ user.username }}</p>
+            <p>Email: {{ user.email }}</p>
+            <a href="{% url 'logout' %}" class="logout-link">Log Out</a>
+        </div>
+        
+        <div class="main-content">
+            <div class="nav-links">
+                <a href="#restaurants">Available Restaurants</a>
+                <a href="#orders">My Orders</a>
+            </div>
+
+            <!-- Available Restaurants Section -->
+            <div id="restaurants" class="section">
+                <h2>Available Restaurants</h2>
+                {% if restaurants %}
+                    {% for restaurant in restaurants %}
+                        <div class="restaurant-item">
+                            <h3>{{ restaurant.name }}</h3>
+                            <p>{{ restaurant.address }}</p>
+                            <a href="{% url 'restaurant_menu' restaurant.id %}">View Menu</a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No restaurants available at the moment.</p>
+                {% endif %}
+            </div>
+
+            <!-- My Orders Section -->
+            <div id="orders" class="section">
+                <h2>My Orders</h2>
+                {% if orders %}
+                    {% for order in orders %}
+                        <div class="order-item">
+                            <h4>Order #{{ order.id }}</h4>
+                            <p>Total Price: ${{ order.total_price }}</p>
+                            <p>Status: {{ order.status }}</p>
+                            <p>Placed on: {{ order.created_at }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>You have not placed any orders yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

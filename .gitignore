@@ -1,0 +1,14 @@
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+staticfiles/
+.env
+venv/
+myvenv/
+ENV/
+env/
+.venv/
+.vscode/
